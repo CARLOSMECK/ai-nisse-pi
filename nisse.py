@@ -19,11 +19,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 try:
-    import RPi.GPIO as GPIO
+    from gpiozero import MotionSensor
     PI_AVAILABLE = True
 except ImportError:
     PI_AVAILABLE = False
-    print("RPi.GPIO inte tillgangligt - kor i testlage")
+    print("gpiozero inte tillgangligt - kor i testlage")
 
 import openai
 import requests
@@ -263,21 +263,24 @@ def nisse_flow():
 # GPIO OCH PIR-SENSOR
 # ============================================================================
 
+pir_sensor = None
+
 def setup_gpio():
     """Initierar GPIO för PIR-sensor."""
+    global pir_sensor
     if not PI_AVAILABLE:
         logger.warning("GPIO inte tillgangligt - testlage")
         return False
     
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(PIR_PIN, GPIO.IN)
+    pir_sensor = MotionSensor(PIR_PIN)
     logger.info(f"GPIO initierat, PIR pa pin {PIR_PIN}")
     return True
 
 def cleanup_gpio():
     """Städar upp GPIO."""
-    if PI_AVAILABLE:
-        GPIO.cleanup()
+    global pir_sensor
+    if pir_sensor:
+        pir_sensor.close()
         logger.info("GPIO stadat")
 
 # ============================================================================
@@ -311,9 +314,9 @@ def main():
         while True:
             motion_detected = False
             
-            if gpio_ready:
+            if gpio_ready and pir_sensor:
                 # Läs PIR-sensor
-                motion_detected = GPIO.input(PIR_PIN)
+                motion_detected = pir_sensor.motion_detected
             else:
                 # Testläge - vänta på Enter
                 try:
