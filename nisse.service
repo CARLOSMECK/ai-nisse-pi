@@ -1,0 +1,25 @@
+[Unit]
+Description=AI Nisse - Magisk nissedörr
+After=network.target sound.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/ai-nisse-pi
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /home/pi/ai-nisse-pi/nisse.py
+Restart=always
+RestartSec=10
+
+# Ge tillgång till GPIO och ljud
+SupplementaryGroups=gpio audio
+
+# Logga till journal
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
