@@ -2,6 +2,8 @@
 
 import os
 import time
+import json
+import random
 import logging
 import subprocess
 import tempfile
@@ -18,6 +20,7 @@ except ImportError:
 
 import openai
 import requests
+from config import NISSE_PERSONALITY, GENERAL_THEME
 
 # KONFIGURATION
 load_dotenv()
@@ -25,7 +28,7 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("openai_api_key")
 ELEVENLABS_API_KEY = os.getenv("elevenlabs_api_key")
 
-PIR_PIN = 17  # GPIO17 (fysisk pin 11)
+PIR_PIN = 17
 
 COOLDOWN_SECONDS = 25
 
@@ -39,26 +42,30 @@ ELEVENLABS_VOICE_SETTINGS = {
     "use_speaker_boost": True
 }
 
-NISSE_PERSONALITY = """
-Du är en tomtenisse som älskar julen.
-Du pratar gammaldags och mysigt, som en riktig tomtenisse från svenska folksagorna.
-Du använder uttryck som "ho ho", "nämen", "jösses".
-Du är godhjärtad och älskar barn.
-Du säger aldrig något läskigt.
-"""
+def get_todays_theme() -> str: 
+    if random.random() < 0.5:
+        return GENERAL_THEME    
+    brevfil = Path(__file__).parent / "nissebrev.json"  
+    if not brevfil.exists():
+        return GENERAL_THEME   
+    try:
+        with open(brevfil, 'r', encoding='utf-8') as f:
+            brev = json.load(f)       
+        today = datetime.now().strftime("%Y-%m-%d")       
+        for entry in brev:
+            if entry.get("date") == today:
+                return f"""
+Idag lämnade du detta brev till barnen:
+"{entry['message']}"
 
-CURRENT_THEME = """
-Det är adventstid och julen närmar sig!
-Du kan prata om:
-- Julklappar och julönskelistor
-- Tomten som snart kommer
-- Pepparkaksbak och julpynt
-- Snälla barn och busiga barn
-- Julstämning och magi
-- Renar och slädar
-- Snön och vintern
-Välj ett av dessa ämnen och gör en kort, glad kommentar.
+Prata om något som anknyter till dagens brev, kanske det bus du gjorde i natt,
+eller fråga om de hittade det du gömde. Var lekfull och nyfiken!
 """
+        
+        return GENERAL_THEME
+        
+    except Exception:
+        return GENERAL_THEME
 
 # LOGGNING
 log_dir = Path(__file__).parent / "logs"
@@ -77,14 +84,17 @@ logger = logging.getLogger(__name__)
 def generate_nisse_response() -> str:
     logger.info("Genererar nissreplik via GPT...")    
     client = openai.OpenAI(api_key=OPENAI_API_KEY)
+    
+    current_theme = get_todays_theme()
+    
     prompt = f"""
 {NISSE_PERSONALITY}
 
-Dagens tema: {CURRENT_THEME}
+Dagens tema: {current_theme}
 
 Generera EN kort replik (max 1-2 meningar) som nissen säger när ett barn går förbi.
 Repliken ska vara:
-- Handla om jul, julklappar, tomten, snön, eller något annat juligt
+- Anknyta till dagens tema/brev om möjligt
 - Använd nisseuttryck som "ho ho", "nämen", "jösses"
 - Barnvänlig och glad
 - På svenska
@@ -99,13 +109,11 @@ Repliken ska vara:
             ],
             max_tokens=100,
             temperature=0.9
-        )
-        
+        )      
         text = response.choices[0].message.content.strip()
         text = text.strip('"\'')
         logger.info(f"Nisse säger: {text}")
-        return text
-        
+        return text        
     except Exception as e:
         logger.error(f"GPT-fel: {e}")
         return None
@@ -113,8 +121,7 @@ Repliken ska vara:
 # ELEVENLABS - TEXT TILL TAL
 def text_to_speech(text: str) -> str:
     logger.info("Konverterar text till tal via ElevenLabs...")
-    url = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}"
-    
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}"   
     headers = {
         "xi-api-key": ELEVENLABS_API_KEY,
         "Content-Type": "application/json"
