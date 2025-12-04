@@ -146,6 +146,8 @@ def text_to_speech(text: str) -> str:
         return None
 
 # LJUDUPPSPELNING
+AUDIO_DEVICE = "hw:2,0"  # USB-högtalare (card 2)
+
 def play_audio(audio_path: str) -> bool:
     if not audio_path or not os.path.exists(audio_path):
         logger.error("Ingen ljudfil att spela upp")
@@ -153,7 +155,7 @@ def play_audio(audio_path: str) -> bool:
     logger.info(f"Spelar upp: {audio_path}")      
     try:
         result = subprocess.run(
-            ["mpg123", "-q", audio_path],
+            ["mpg123", "-q", "-a", AUDIO_DEVICE, audio_path],
             capture_output=True,
             timeout=60
         )
