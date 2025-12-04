@@ -54,15 +54,32 @@ sudo bash install.sh
 
 ## Användning
 
+### Manuell körning
+
 ```bash
-# Manuell körning
 source venv/bin/activate
 python3 nisse.py
+```
 
-# Som service (auto-start vid boot)
+### Som bakgrundstjänst
+
+Nissen körs automatiskt i bakgrunden och startar vid boot.
+
+```bash
+# Starta nissen
 sudo systemctl start nisse
+
+# Se status
 sudo systemctl status nisse
+
+# Följ loggar i realtid
 sudo journalctl -u nisse -f
+
+# Stoppa nissen
+sudo systemctl stop nisse
+
+# Starta om efter kodändringar
+sudo systemctl restart nisse
 ```
 
 ## Justera volymen
