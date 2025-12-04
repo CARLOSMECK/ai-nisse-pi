@@ -109,7 +109,7 @@ Repliken ska vara:
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-mini",
             messages=[
                 {"role": "system", "content": "Du är en snäll tomtenisse som pratar gammaldags svenska med mysiga nisseuttryck."},
                 {"role": "user", "content": prompt}

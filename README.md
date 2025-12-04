@@ -9,10 +9,12 @@ Raspberry Pi 5 + PIR-sensor + OpenAI + ElevenLabs = julens roligaste automation.
 
 ## Hur det fungerar
 
-1. PIR-sensorn upptäcker rörelse
-2. OpenAI GPT genererar en unik nissefras
-3. ElevenLabs konverterar till tal
-4. Nissen pratar genom högtalaren
+```mermaid
+flowchart LR
+    A[Rörelse] --> B[OpenAI GPT-5-mini<br/>Generera replik]
+    B --> C[ElevenLabs AI<br/>Text → Tal]
+    C --> D[Spela upp ljud]
+```
 
 ## Hårdvara
 
