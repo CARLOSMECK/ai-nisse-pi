@@ -283,7 +283,8 @@ def main():
                 
                 if time_since_last >= COOLDOWN_SECONDS:
                     if not is_active_hours():
-                        logger.debug(f"Rörelse men utanför aktiva tider ({AKTIV_START}-{AKTIV_SLUT})")
+                        logger.info(f"Rörelse men utanför aktiva tider (kl {AKTIV_START}-{AKTIV_SLUT})")
+                        last_trigger_time = current_time
                         continue
                     logger.info("Rörelse detekterad!")
                     last_trigger_time = current_time
