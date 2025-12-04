@@ -20,7 +20,10 @@ except ImportError:
 
 import openai
 import requests
-from config import NISSE_PERSONALITY, GENERAL_THEME
+from config import (
+    NISSE_PERSONALITY, GENERAL_THEME, BARN, 
+    AKTIV_START, AKTIV_SLUT, VOLYM, AUDIO_DEVICE
+)
 
 # KONFIGURATION
 load_dotenv()
@@ -87,6 +90,10 @@ def generate_nisse_response() -> str:
     
     current_theme = get_todays_theme()
     
+    namn_text = ""
+    if BARN and random.random() < 0.3: 
+        namn_text = f"\n- Nämn barnen {' och '.join(BARN)} vid namn"
+    
     prompt = f"""
 {NISSE_PERSONALITY}
 
@@ -97,7 +104,7 @@ Repliken ska vara:
 - Anknyta till dagens tema/brev om möjligt
 - Använd nisseuttryck som "ho ho", "nämen", "jösses"
 - Barnvänlig och glad
-- På svenska
+- På svenska{namn_text}
 """
     
     try:
@@ -146,7 +153,15 @@ def text_to_speech(text: str) -> str:
         return None
 
 # LJUDUPPSPELNING
-AUDIO_DEVICE = "hw:2,0"  # USB-högtalare (card 2)
+def set_volume():
+    try:
+        subprocess.run(
+            ["amixer", "-c", "2", "set", "PCM", f"{VOLYM}%"],
+            capture_output=True
+        )
+        logger.info(f"Volym satt till {VOLYM}%")
+    except Exception as e:
+        logger.warning(f"Kunde inte sätta volym: {e}")
 
 def play_audio(audio_path: str) -> bool:
     if not audio_path or not os.path.exists(audio_path):
@@ -221,6 +236,10 @@ def cleanup_gpio():
         logger.info("GPIO städat")
 
 # HUVUDLOOP
+def is_active_hours() -> bool:
+    hour = datetime.now().hour
+    return AKTIV_START <= hour < AKTIV_SLUT
+
 def main():
     logger.info("=" * 50)
     logger.info("   AI-NISSE STARTAR!")
@@ -232,6 +251,10 @@ def main():
         logger.error("ELEVENLABS_API_KEY saknas i .env!")
         return
     logger.info("API-nycklar laddade")
+    logger.info(f"Aktiv mellan kl {AKTIV_START}:00 - {AKTIV_SLUT}:00")
+    logger.info(f"Barn: {', '.join(BARN)}")
+    
+    set_volume()
     gpio_ready = setup_gpio()
     last_trigger_time = 0
     try:
@@ -255,7 +278,10 @@ def main():
                 time_since_last = current_time - last_trigger_time
                 
                 if time_since_last >= COOLDOWN_SECONDS:
-                    logger.info("Rorelse detekterad!")
+                    if not is_active_hours():
+                        logger.debug(f"Rörelse men utanför aktiva tider ({AKTIV_START}-{AKTIV_SLUT})")
+                        continue
+                    logger.info("Rörelse detekterad!")
                     last_trigger_time = current_time
                     nisse_flow()
                 else:
