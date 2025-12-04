@@ -264,7 +264,11 @@ def main():
             motion_detected = False
             
             if gpio_ready and pir_sensor:
-                motion_detected = pir_sensor.motion_detected
+                try:
+                    motion_detected = pir_sensor.motion_detected
+                except RuntimeError:
+                    time.sleep(0.1)
+                    continue
             else:
                 try:
                     input("Tryck Enter for att simulera rörelse (Ctrl+C for att avsluta)...")
