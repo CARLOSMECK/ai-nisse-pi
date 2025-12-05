@@ -114,13 +114,17 @@ Repliken ska vara:
                 {"role": "system", "content": "Du är en snäll tomtenisse som pratar gammaldags svenska med mysiga nisseuttryck."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=100,
-            temperature=0.9
-        )      
-        text = response.choices[0].message.content.strip()
-        text = text.strip('"\'')
+            max_completion_tokens=2000
+        )
+        
+        content = response.choices[0].message.content
+        if not content:
+            logger.error("Tomt svar från GPT")
+            return None
+            
+        text = content.strip().strip('"\'')
         logger.info(f"Nisse säger: {text}")
-        return text        
+        return text if text else None        
     except Exception as e:
         logger.error(f"GPT-fel: {e}")
         return None
