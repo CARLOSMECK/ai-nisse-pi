@@ -117,17 +117,9 @@ Repliken ska vara:
             max_completion_tokens=2000
         )
         
-        logger.info(f"GPT response: {response}")
-        
-        message = response.choices[0].message
-        content = message.content
-        
-        # GPT-5 kan ha content i output_text för reasoning models
-        if not content and hasattr(response, 'output_text'):
-            content = response.output_text
-        
+        content = response.choices[0].message.content
         if not content:
-            logger.error(f"Tomt svar - message: {message}")
+            logger.error("Tomt svar från GPT")
             return None
             
         text = content.strip().strip('"\'')
