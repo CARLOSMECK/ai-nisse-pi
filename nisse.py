@@ -114,7 +114,7 @@ Repliken ska vara:
                 {"role": "system", "content": "Du är en snäll tomtenisse som pratar gammaldags svenska med mysiga nisseuttryck."},
                 {"role": "user", "content": prompt}
             ],
-            max_completion_tokens=500
+            max_completion_tokens=2000
         )
         
         logger.info(f"GPT response: {response}")
