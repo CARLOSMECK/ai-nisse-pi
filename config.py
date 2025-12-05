@@ -1,9 +1,9 @@
 # Barnens namn (nissen nämner ibland ett av dem)
 BARN = ["Livia", "Juni"]
 
-# Aktiva tider (nissen pratar bara mellan dessa tider)
-AKTIV_START = 16  # kl 16:00
-AKTIV_SLUT = 18   # kl 18:00
+# Aktiva tider (nissen pratar hela dagen)
+AKTIV_START = 0   # kl 00:00
+AKTIV_SLUT = 24   # kl 24:00
 
 # Volym (0-100%)
 VOLYM = 80
