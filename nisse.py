@@ -115,11 +115,24 @@ Repliken ska vara:
                 {"role": "user", "content": prompt}
             ],
             max_completion_tokens=100
-        )      
-        text = response.choices[0].message.content.strip()
-        text = text.strip('"\'')
+        )
+        
+        logger.info(f"GPT response: {response}")
+        
+        message = response.choices[0].message
+        content = message.content
+        
+        # GPT-5 kan ha content i output_text för reasoning models
+        if not content and hasattr(response, 'output_text'):
+            content = response.output_text
+        
+        if not content:
+            logger.error(f"Tomt svar - message: {message}")
+            return None
+            
+        text = content.strip().strip('"\'')
         logger.info(f"Nisse säger: {text}")
-        return text        
+        return text if text else None        
     except Exception as e:
         logger.error(f"GPT-fel: {e}")
         return None
