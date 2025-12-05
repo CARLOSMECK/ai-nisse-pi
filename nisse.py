@@ -114,7 +114,7 @@ Repliken ska vara:
                 {"role": "system", "content": "Du är en snäll tomtenisse som pratar gammaldags svenska med mysiga nisseuttryck."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=100,
+            max_completion_tokens=100,
             temperature=0.9
         )      
         text = response.choices[0].message.content.strip()
