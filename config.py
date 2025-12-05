@@ -25,3 +25,18 @@ GENERAL_THEME = """
 Det är adventstid och julen närmar sig!
 Prata om jul, julklappar, tomten, snön, renar, pepparkakor eller något annat juligt.
 """
+
+# Olika stilar för repliker (slumpas)
+REPLIK_STILAR = [
+    "Ställ en nyfiken fråga till barnet",
+    "Berätta något spännande du gjort i natt",
+    "Viska en hemlighet",
+    "Var lite busig och skojig",
+    "Var extra varm och kärleksfull",
+    "Låtsas att du precis vaknade",
+    "Var uppspelt och glad",
+    "Ge barnet en liten komplimang",
+]
+
+# Olika längder på repliker (slumpas)
+REPLIK_LÄNGDER = ["1 mening", "2 meningar", "2-3 meningar"]

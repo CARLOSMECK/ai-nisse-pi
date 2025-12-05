@@ -22,7 +22,8 @@ import openai
 import requests
 from config import (
     NISSE_PERSONALITY, GENERAL_THEME, BARN, 
-    AKTIV_START, AKTIV_SLUT, VOLYM, AUDIO_DEVICE
+    AKTIV_START, AKTIV_SLUT, VOLYM, AUDIO_DEVICE,
+    REPLIK_STILAR, REPLIK_LÄNGDER
 )
 
 # KONFIGURATION
@@ -33,7 +34,7 @@ ELEVENLABS_API_KEY = os.getenv("elevenlabs_api_key")
 
 PIR_PIN = 17
 
-COOLDOWN_SECONDS = 25
+COOLDOWN_SECONDS = 60
 
 ELEVENLABS_VOICE_ID = "DUnzBkwtjRWXPr6wRbmL"  # Mad Scientist
 ELEVENLABS_MODEL = "eleven_multilingual_v2"
@@ -90,21 +91,31 @@ def generate_nisse_response() -> str:
     
     current_theme = get_todays_theme()
     
+    # Slumpmässig variation
     namn_text = ""
     if BARN and random.random() < 0.3: 
         namn_text = f"\n- Nämn barnen {' och '.join(BARN)} vid namn"
+    
+    replik_stil = random.choice(REPLIK_STILAR)
+    längd = random.choice(REPLIK_LÄNGDER)
     
     prompt = f"""
 {NISSE_PERSONALITY}
 
 Dagens tema: {current_theme}
 
-Generera EN kort replik (max 1-2 meningar) som nissen säger när ett barn går förbi.
+Generera en replik ({längd}) som nissen säger när ett barn går förbi.
+
+Stil för denna replik: {replik_stil}
+
 Repliken ska vara:
-- Anknyta till dagens tema/brev om möjligt
+- Unik och inte lik tidigare repliker
 - Använd nisseuttryck som "ho ho", "nämen", "jösses"
 - Barnvänlig och glad
+- Prata om julen och julklapparna
 - På svenska{namn_text}
+
+VIKTIGT: Var kreativ och variera dig! Upprepa inte samma fraser.
 """
     
     try:
