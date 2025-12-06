@@ -99,3 +99,10 @@ amixer -c 2 set PCM 100%
 Redigera `config.py` för att ändra nissens personlighet.
 
 Redigera `nissebrev.json` för att lägga till dagliga brev som nissen refererar till.
+
+## Testa
+
+```bash
+# Se vad som skickas till GPT (utan att anropa API)
+python3 tests/test_prompt.py
+```

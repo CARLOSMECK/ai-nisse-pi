@@ -34,7 +34,7 @@ ELEVENLABS_API_KEY = os.getenv("elevenlabs_api_key")
 
 PIR_PIN = 17
 
-COOLDOWN_SECONDS = 60
+COOLDOWN_SECONDS = 45
 
 ELEVENLABS_VOICE_ID = "DUnzBkwtjRWXPr6wRbmL"  # Mad Scientist
 ELEVENLABS_MODEL = "eleven_multilingual_v2"
@@ -104,25 +104,15 @@ def generate_nisse_response() -> str:
 
 Dagens tema: {current_theme}
 
-Generera en replik ({längd}) som nissen säger när ett barn går förbi.
-
-Stil för denna replik: {replik_stil}
-
-Repliken ska vara:
-- Unik och inte lik tidigare repliker
-- Använd nisseuttryck som "ho ho", "nämen", "jösses"
-- Barnvänlig och glad
-- Prata om julen och julklapparna
-- På svenska{namn_text}
-
-VIKTIGT: Var kreativ och variera dig! Upprepa inte samma fraser.
+Generera en replik ({längd}).
+Stil: {replik_stil}{namn_text}
 """
     
     try:
         response = client.chat.completions.create(
             model="gpt-5-mini",
             messages=[
-                {"role": "system", "content": "Du är en snäll tomtenisse som pratar gammaldags svenska med mysiga nisseuttryck."},
+                {"role": "system", "content": "Du är en tomtenisse. Svara endast med repliken, inget annat."},
                 {"role": "user", "content": prompt}
             ],
             max_completion_tokens=2000
