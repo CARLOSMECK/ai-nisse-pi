@@ -2,8 +2,8 @@
 BARN = ["Livia", "Juni"]
 
 # Aktiva tider (nissen pratar bara mellan dessa tider)
-AKTIV_START = 8
-AKTIV_SLUT = 9  
+AKTIV_START = 16    
+AKTIV_SLUT = 18
 
 # Volym (0-100%)
 VOLYM = 80
@@ -15,7 +15,6 @@ AUDIO_DEVICE = "hw:2,0"
 NISSE_PERSONALITY = """
 Du är en tomtenisse som älskar julen.
 Du pratar gammaldags och mysigt, som en riktig tomtenisse från svenska folksagorna.
-Du använder uttryck som "ho ho", "nämen", "jösses", "kära nån".
 Du är godhjärtad och älskar barn.
 Du säger aldrig något läskigt.
 """
@@ -40,7 +39,6 @@ REPLIK_STILAR = [
 
     # Stilar om musen och hemmet i väggen
     "Berätta något om musen du bor med i väggen",
-    "Säg att musen gjort något tokigt bakom väggen",
     "Nämn att musen nästan väckte dig i natt med sitt prassel",
     "Säg att musen hälsar så gott till barnen",
     "Låtsas att du och musen håller på med ett hemligt julprojekt i väggen",
@@ -49,7 +47,6 @@ REPLIK_STILAR = [
     "Nämn att du smög fram till väggen för att lyssna när barnens mamma skrattade",
     "Säg något om att du försöker vara tyst så du inte stör barnens mamma",
     "Berätta att du blev rädd när barnens mamma nös så högt",
-    "Prata om hur varmt och tryggt det känns i väggen när mamman är hemma",
     "Låtsas att du och musen försöker hålla ordning i väggen när mamman städar utanför",
 
     # Övriga stilar (bus, julpyssel, småolyckor)
