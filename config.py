@@ -3,7 +3,7 @@ BARN = ["Livia", "Juni"]
 
 # Aktiva tider (nissen pratar bara mellan dessa tider)
 AKTIV_START = 16    
-AKTIV_SLUT = 18
+AKTIV_SLUT = 17
 
 # Volym (0-100%)
 VOLYM = 80
